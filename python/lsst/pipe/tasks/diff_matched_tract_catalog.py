@@ -475,7 +475,8 @@ class DiffMatchedTractCatalogTaskBase(pipeBase.Task):
         if config.include_unmatched:
             # This is probably less efficient than just doing an outer join originally; worth checking
             cat_matched = astropy.table.vstack([cat_matched, cat_unmatched])
-            if (prefix_coord := config.prefix_best_coord) is not None:
+            prefix_best_coord=None
+            if (prefix_coord := prefix_best_coord) is not None:
                 columns_coord_best = (
                     f"{prefix_coord}{col_coord}" for col_coord in (
                         ("ra", "dec") if config.coord_format.coords_spherical else ("coord1", "coord2")
