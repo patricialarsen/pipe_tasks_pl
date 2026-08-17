@@ -912,13 +912,6 @@ class TransformObjectCatalogConnections(pipeBase.PipelineTaskConnections,
         name="{coaddName}Coadd_Sersic_multiprofit",
         deferLoad=True,
     )
-    inputCatalogEpoch = connectionTypes.Input(
-        doc="Catalog of mean epochs for each object per band.",
-        dimensions=("tract", "patch", "skymap"),
-        storageClass="ArrowAstropy",
-        name="object_epoch",
-        deferLoad=True,
-    )
     outputCatalog = connectionTypes.Output(
         doc="Per-Patch Object Table of columns transformed from the deepCoadd_obj table per the standard "
             "data model.",
@@ -1006,7 +999,7 @@ class TransformObjectCatalogTask(TransformCatalogBaseTask):
     _DefaultName = "transformObjectCatalog"
     ConfigClass = TransformObjectCatalogConfig
 
-    datasets_multiband = ("epoch", "ref", "Sersic_multiprofit")
+    datasets_multiband = ("ref", "Sersic_multiprofit")
 
     def runQuantum(self, butlerQC, inputRefs, outputRefs):
         inputs = butlerQC.get(inputRefs)
@@ -1015,7 +1008,6 @@ class TransformObjectCatalogTask(TransformCatalogBaseTask):
                              "Must be a valid path to yaml in order to run Task as a PipelineTask.")
         result = self.run(handle=inputs["inputCatalog"], funcs=self.funcs,
                           dataId=dict(outputRefs.outputCatalog.dataId.mapping),
-                          handle_epoch=inputs["inputCatalogEpoch"],
                           handle_ref=inputs["inputCatalogRef"],
                           handle_Sersic_multiprofit=inputs["inputCatalogSersicMultiprofit"],
                           )
